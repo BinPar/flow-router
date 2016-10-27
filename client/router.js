@@ -371,17 +371,19 @@ Router.prototype.initialize = function(options) {
   //
   // we need override both show, replace to make this work
   // since we use redirect when we are talking about withReplaceState
-  _.each(['show', 'replace'], function(fnName) {
-    var original = self._page[fnName];
-    self._page[fnName] = function(path, state, dispatch, push) {
-      var reload = self.env.reload.get();
-      if (!reload && self._current.path === path) {
-        return;
-      }
+  if(options.idempotent){
+    _.each(['show', 'replace'], function(fnName) {
+      var original = self._page[fnName];
+      self._page[fnName] = function(path, state, dispatch, push) {
+        var reload = self.env.reload.get();
+        if (!reload && self._current.path === path) {
+          return;
+        }
 
-      original.call(this, path, state, dispatch, push);
-    };
-  });
+        original.call(this, path, state, dispatch, push);
+      };
+    });
+  }
 
   // this is very ugly part of pagejs and it does decoding few times
   // in unpredicatable manner. See #168
