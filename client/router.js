@@ -178,9 +178,6 @@ Router = class extends SharedRouter {
 
     // Implement idempotant routing
     const insideAReload = this.env.reload.get();
-    if (this._current.path === path && !insideAReload) {
-      return;
-    }
 
     const allQueryParams = this._decodeValues(Qs.parse(context.queryString));
 
